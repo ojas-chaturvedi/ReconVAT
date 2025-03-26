@@ -22,7 +22,7 @@ def convert_mp3_to_16k_flac(input_mp3_path, output_flac_path):
     # Save as FLAC using soundfile
     sf.write(output_flac_path, audio.get_array_of_samples(), 16000, format="FLAC")
 
-    print(f"✅ Converted: {input_mp3_path} → {output_flac_path}")
+    print(f"Converted: {input_mp3_path} → {output_flac_path}")
 
 
 if __name__ == "__main__":
