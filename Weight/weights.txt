@@ -1,0 +1,3 @@
+Due to limited upload size and double blind review process, we only provide two weight files that is essential to transcribe the audio clips.
+
+We will host the rest of the weight files on our website once the paper is accepted.
