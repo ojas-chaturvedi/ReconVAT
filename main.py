@@ -79,13 +79,6 @@ def transcribe2midi(
         save_midi(midi_path, p_est, i_est, [127] * len(p_est))
 
 
-@ex.config
-def config():
-    device = "cuda:0"
-    model_type = "ReconVAT"
-    # instrument='string'
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="Transcribe a .mp3 file to .mid using a selected model."
