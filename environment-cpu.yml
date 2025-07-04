@@ -4,6 +4,7 @@ channels:
     - defaults
 dependencies:
     - python=3.6.5
+    - libsndfile
     - pip
     - pip:
           - torch==1.6.0
