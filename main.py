@@ -1,5 +1,5 @@
 """
-Usage: python main.py -i input.mp3 -o output.mid --model_type ReconVAT --device cpu
+Usage: python main.py -i input.mp3 -o output.mid --model_type ReconVAT --device gpu
 """
 
 import pickle
@@ -34,7 +34,8 @@ def transcribe2midi(
     VAT=False,
 ):
     for i in data:
-        pred = model.transcribe(i)
+        with torch.no_grad():
+            pred = model.transcribe(i)
         #         print(f"pred['onset2'] = {pred['onset2'].shape}")
         #         print(f"pred['frame2'] = {pred['frame2'].shape}")
 
@@ -80,6 +81,7 @@ def transcribe2midi(
 
 
 def main():
+    torch.cuda.empty_cache()
     parser = argparse.ArgumentParser(
         description="Transcribe a .mp3 file to .mid using a selected model."
     )
@@ -143,7 +145,7 @@ def main():
         model,
         args.model_type,
         reconstruction=False,
-        save_path=os.path.dirname(args.output),
+        save_path=os.path.dirname(args.output) or ".",
     )
 
     base_flac_name = os.path.basename(flac_path).replace(".flac", "")
