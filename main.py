@@ -13,11 +13,23 @@ from pydub import AudioSegment
 import soundfile as sf
 
 
-def convert_mp3_to_16k_flac(input_mp3_path, output_flac_path):
-    audio = AudioSegment.from_mp3(input_mp3_path)
+def convert_to_16k_flac(input_path, output_flac_path):
+    # Detect file extension and load the correct format
+    ext = os.path.splitext(input_path)[1].lower()
+
+    if ext == ".mp3":
+        audio = AudioSegment.from_mp3(input_path)
+    elif ext == ".wav":
+        audio = AudioSegment.from_wav(input_path)
+    else:
+        audio = AudioSegment.from_file(input_path)  # Let ffmpeg determine the format
+
+    # Resample to 16kHz and convert to mono
     audio = audio.set_frame_rate(16000).set_channels(1)  # mono 16kHz
+
+    # Save the FLAC file
     sf.write(output_flac_path, audio.get_array_of_samples(), 16000, format="FLAC")
-    print(f"Converted: {input_mp3_path} → {output_flac_path}")
+    print(f"Converted: {input_path} → {output_flac_path}")
 
 
 def transcribe2midi(
@@ -85,7 +97,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Transcribe a .mp3 file to .mid using a selected model."
     )
-    parser.add_argument("--input", "-i", required=True, help="Path to input .mp3 file")
+    parser.add_argument("--input", "-i", required=True, help="Path to input .mp3 or .wav file")
     parser.add_argument(
         "--output", "-o", required=True, help="Path to output .mid file"
     )
@@ -113,7 +125,7 @@ def main():
     tmp_input_dir = tempfile.mkdtemp()
     flac_filename = os.path.splitext(os.path.basename(args.input))[0] + ".flac"
     flac_path = os.path.join(tmp_input_dir, flac_filename)
-    convert_mp3_to_16k_flac(args.input, flac_path)
+    convert_to_16k_flac(args.input, flac_path)
 
     # Load audios from the Input files
     application_dataset = Application_Dataset(tmp_input_dir, device=args.device)
